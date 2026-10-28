@@ -30,6 +30,9 @@ struct ContentView: View {
                     step(3, "Allow Full Access (optional)",
                          "Only for haptics and an online fallback. Typing never leaves your phone otherwise.",
                          done: false) { EmptyView() }
+                    step(4, "Add the Calendario widget",
+                         "Long-press the Home Screen → + → Hablo. Long-press the widget → Edit Widget to pick Español, Français, Italiano or English.",
+                         done: false) { EmptyView() }
                 }
                 .padding(.horizontal, 18)
 

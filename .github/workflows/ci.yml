@@ -85,10 +85,11 @@ jobs:
             -authenticationKeyID "$ASC_KEY_ID" \
             -authenticationKeyIssuerID "$ASC_ISSUER_ID"
           ls -la build/adhoc
-      - name: Gate - keyboard extension must be inside the signed app
+      - name: Gate - keyboard + widget extensions must be inside the signed app
         run: |
           cd build/adhoc && unzip -q -o *.ipa
           test -d Payload/Hablo.app/PlugIns/HabloKeyboard.appex || { echo "::error::keyboard appex missing"; exit 1; }
+          test -d Payload/Hablo.app/PlugIns/HabloWidgets.appex || { echo "::error::widget appex missing"; exit 1; }
           codesign --verify --deep --strict Payload/Hablo.app
       - name: Publish install page to GitHub Pages
         env:
