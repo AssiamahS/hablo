@@ -1,0 +1,75 @@
+name: Hablo
+options:
+  bundleIdPrefix: com.assiamah
+  deploymentTarget:
+    iOS: "26.0"
+  xcodeVersion: "26.0"
+  createIntermediateGroups: true
+
+settings:
+  base:
+    SWIFT_VERSION: "5.9"
+    MARKETING_VERSION: 1.0.1
+    CURRENT_PROJECT_VERSION: 1
+    DEVELOPMENT_TEAM: QGMAWHX827
+    CODE_SIGN_STYLE: Automatic
+
+targets:
+  Hablo:
+    type: application
+    platform: iOS
+    sources:
+      - App
+      - Shared
+    dependencies:
+      - target: HabloKeyboard
+    info:
+      path: App/Info.plist
+      properties:
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        CFBundleDisplayName: Hablo
+        CFBundleIconName: AppIcon
+        UILaunchScreen: {}
+        UISupportedInterfaceOrientations: [UIInterfaceOrientationPortrait]
+        ITSAppUsesNonExemptEncryption: false
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.assiamah.hablo
+        TARGETED_DEVICE_FAMILY: "1"
+        ASSETCATALOG_COMPILER_APPICON_NAME: AppIcon
+
+  HabloKeyboard:
+    type: app-extension
+    platform: iOS
+    sources:
+      - Keyboard
+      - Shared
+    info:
+      path: Keyboard/Info.plist
+      properties:
+        CFBundleDisplayName: Hablo
+        CFBundleShortVersionString: $(MARKETING_VERSION)
+        CFBundleVersion: $(CURRENT_PROJECT_VERSION)
+        NSExtension:
+          NSExtensionPointIdentifier: com.apple.keyboard-service
+          NSExtensionPrincipalClass: $(PRODUCT_MODULE_NAME).KeyboardViewController
+          NSExtensionAttributes:
+            IsASCIICapable: false
+            PrefersRightToLeft: false
+            PrimaryLanguage: en-US
+            RequestsOpenAccess: true
+    settings:
+      base:
+        PRODUCT_BUNDLE_IDENTIFIER: com.assiamah.hablo.keyboard
+        SKIP_INSTALL: true
+        TARGETED_DEVICE_FAMILY: "1"
+
+schemes:
+  Hablo:
+    build:
+      targets:
+        Hablo: all
+        HabloKeyboard: all
+    run:
+      config: Debug
