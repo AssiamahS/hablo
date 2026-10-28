@@ -7,8 +7,11 @@ struct ContentView: View {
     @State private var downloading = false
     @State private var config: TranslationSession.Configuration?
     @State private var pending: [Lang] = []
+    @FocusState private var tryFocused: Bool
+    @AppStorage("openTranslator") private var openTranslator = false
 
     var body: some View {
+        ScrollViewReader { proxy in
         ScrollView {
             VStack(spacing: 22) {
                 hero
@@ -30,14 +33,15 @@ struct ContentView: View {
                     step(3, "Allow Full Access (optional)",
                          "Only for haptics and an online fallback. Typing never leaves your phone otherwise.",
                          done: false) { EmptyView() }
-                    step(4, "Add the Calendario widget",
-                         "Long-press the Home Screen → + → Hablo. Long-press the widget → Edit Widget to pick Español, Français, Italiano or English.",
+                    step(4, "Add the widgets",
+                         "Long-press the Home Screen → + → Hablo: Calendario (small) and Word of the Hour (medium / large). Long-press a widget → Edit Widget to change language. Control Center → + → Hablo Translate opens this translator.",
                          done: false) { EmptyView() }
                 }
                 .padding(.horizontal, 18)
 
-                TryItCard()
+                TryItCard(focused: $tryFocused)
                     .padding(.horizontal, 18)
+                    .id("tryit")
 
                 Text("In any app: tap 🌐 on your keyboard to switch to Hablo, type in your language, tap **Insert**.")
                     .font(.footnote)
@@ -53,8 +57,23 @@ struct ContentView: View {
             do { try await session.prepareTranslation() } catch {}
             await next()
         }
-        .task { await refresh() }
-        .onChange(of: phase) { _, p in if p == .active { Task { await refresh() } } }
+        .task { await refresh(); jumpToTranslator(proxy) }
+        .onChange(of: phase) { _, p in
+            if p == .active {
+                Task { await refresh() }
+                jumpToTranslator(proxy)
+            }
+        }
+        .onChange(of: openTranslator) { _, v in if v { jumpToTranslator(proxy) } }
+        }
+    }
+
+    /// Set by OpenTranslatorIntent (Control Center button).
+    private func jumpToTranslator(_ proxy: ScrollViewProxy) {
+        guard openTranslator else { return }
+        openTranslator = false
+        withAnimation { proxy.scrollTo("tryit", anchor: .center) }
+        tryFocused = true
     }
 
     private var hero: some View {
@@ -158,6 +177,7 @@ struct ContentView: View {
 }
 
 private struct TryItCard: View {
+    var focused: FocusState<Bool>.Binding
     @State private var text = ""
     @State private var output = ""
     @State private var source: Lang = .en
@@ -185,6 +205,7 @@ private struct TryItCard: View {
                 .buttonStyle(.plain)
             }
             TextField("Type in \(source.name)…", text: $text, axis: .vertical)
+                .focused(focused)
                 .font(.system(size: 18))
                 .lineLimit(1...4)
             Divider()

@@ -66,5 +66,7 @@ struct HabloCalendarWidget: Widget {
 struct HabloWidgets: WidgetBundle {
     var body: some Widget {
         HabloCalendarWidget()
+        VocabWidget()
+        TranslateControl()
     }
 }

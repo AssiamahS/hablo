@@ -9,7 +9,7 @@ options:
 settings:
   base:
     SWIFT_VERSION: "5.9"
-    MARKETING_VERSION: 1.0.4
+    MARKETING_VERSION: 1.0.5
     CURRENT_PROJECT_VERSION: 1
     DEVELOPMENT_TEAM: QGMAWHX827
     CODE_SIGN_STYLE: Automatic
@@ -21,6 +21,7 @@ targets:
     sources:
       - App
       - Shared
+      - Intents
     dependencies:
       - target: HabloKeyboard
       - target: HabloWidgets
@@ -71,6 +72,7 @@ targets:
     platform: iOS
     sources:
       - Widgets
+      - Intents
     info:
       path: Widgets/Info.plist
       properties:
